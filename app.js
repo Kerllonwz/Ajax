@@ -1,6 +1,10 @@
 async function loadProfile() {
+  // Nome de usuário do GitHub para buscar os dados
+  const githubUsername = 'ogiansouza';
+  
   try {
-    const res = await fetch('data.json');
+    // Requisição para a API do GitHub
+    const res = await fetch(`https://api.github.com/users/${githubUsername}`);
     if (!res.ok) throw new Error('Resposta não OK: ' + res.status);
     const data = await res.json();
 
@@ -12,14 +16,15 @@ async function loadProfile() {
     const followingEl = document.getElementById('following-count');
     const profileLink = document.getElementById('profile-link');
 
-    if (avatar) avatar.src = data.avatar || avatar.src;
-    if (nameEl) nameEl.textContent = data.name || '';
-    if (usernameEl) usernameEl.textContent = data.username ? '@' + data.username : '';
-    if (reposEl) reposEl.textContent = data.repos != null ? data.repos : '-';
+    // Mapeando os dados da API do GitHub para os elementos da página
+    if (avatar) avatar.src = data.avatar_url || avatar.src;
+    if (nameEl) nameEl.textContent = data.name || data.login || '';
+    if (usernameEl) usernameEl.textContent = data.login ? '@' + data.login : '';
+    if (reposEl) reposEl.textContent = data.public_repos != null ? data.public_repos : '-';
     if (followersEl) followersEl.textContent = data.followers != null ? data.followers : '-';
     if (followingEl) followingEl.textContent = data.following != null ? data.following : '-';
     if (profileLink) {
-      profileLink.href = data.profileUrl || '#';
+      profileLink.href = data.html_url || '#';
       profileLink.target = '_blank';
     }
 
